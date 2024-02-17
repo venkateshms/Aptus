@@ -1,15 +1,15 @@
 import requests
 
 class SearchClient:
-    def __init__(self, base_url):
-        self.base_url = base_url
+    def __init__(self, aptus_token):
+        self.base_url = "http://aptus.bio" 
+        self.aptus_token = aptus_token
 
-    def search(self, text_file_path, azure_deployment_embed, azure_deployment_llm, user_inquiry):
+    def search(self, text_file_path, user_inquiry):
         url = f"{self.base_url}/search"
         payload = {
             "text_file_path": text_file_path,
-            "azure_deployment_embed": azure_deployment_embed,
-            "azure_deployment_llm": azure_deployment_llm,
+            "aptus_token": self.aptus_token,  #
             "user_inquiry": user_inquiry
         }
         response = requests.post(url, json=payload)
@@ -19,8 +19,8 @@ class SearchClient:
             raise Exception(f"Search request failed with status {response.status_code}: {response.text}")
 
     @classmethod
-    def interactive_session(cls, base_url, text_file_path, azure_deployment_embed, azure_deployment_llm):
-        client = cls(base_url)
+    def interactive_session(cls, aptus_token, text_file_path):
+        client = cls(aptus_token)
         print("Enter your questions. Type 'quit' to exit.")
         while True:
             user_inquiry = input("Your question: ")
@@ -29,42 +29,21 @@ class SearchClient:
                 break
 
             try:
-                result = client.search(text_file_path, azure_deployment_embed, azure_deployment_llm, user_inquiry)
+                result = client.search(text_file_path, user_inquiry)
                 print("Answer:", result)
             except Exception as e:
                 print(f"An error occurred: {e}")
-# Simplified usage
-# if __name__ == "__main__":
-#     base_url = "http://localhost:5035"
-#     text_file_path = "/Users/mvenkatesh/Desktop/aptus/synthea_sample_data_fhir_latest/Abby752_Rowe323_b728d428-0526-5fcb-bdd7-04bb48323b9f.txt"
-#     azure_deployment_embed = "aptus_embed_demo"
-#     azure_deployment_llm = "aptus35"
-#     SearchClient.interactive_session(base_url, text_file_path, azure_deployment_embed, azure_deployment_llm)
-
-# SearchClient.interactive_session("http://localhost:5035", "/path/to/text_file.txt", "azure_deployment_embed_name", "azure_deployment_llm_name")
-
-
-import requests
-
+                
 class RepoSearchClient:
-    def __init__(self, base_url):
-        self.base_url = base_url
+    def __init__(self, aptus_token):
+        self.base_url = "http://aptus.bio"  # fixed
+        self.aptus_token = aptus_token
 
-    def search(self, folder_path, azure_deployment_embed, azure_deployment_llm, user_inquiry):
-        """
-        Performs a search operation by sending a POST request to the /repo_search endpoint.
-
-        :param folder_path: Path to the folder containing text files to be analyzed.
-        :param azure_deployment_embed: Azure deployment name for embeddings.
-        :param azure_deployment_llm: Azure deployment name for language model operations.
-        :param user_inquiry: The user's inquiry/question.
-        :return: The search result.
-        """
+    def search(self, folder_path, user_inquiry):
         url = f"{self.base_url}/repo_search"
         payload = {
             "folder_path": folder_path,
-            "azure_deployment_embed": azure_deployment_embed,
-            "azure_deployment_llm": azure_deployment_llm,
+            "aptus_token": self.aptus_token,  # Using aptus_token 
             "user_inquiry": user_inquiry
         }
         response = requests.post(url, json=payload)
@@ -74,16 +53,8 @@ class RepoSearchClient:
             raise Exception(f"Search request failed with status {response.status_code}: {response.text}")
 
     @classmethod
-    def interactive_session(cls, base_url, folder_path, azure_deployment_embed, azure_deployment_llm):
-        """
-        Starts an interactive session that allows the user to ask questions in a loop.
-
-        :param base_url: The base URL of the application providing the search functionality.
-        :param folder_path: Path to the folder containing text files to be analyzed.
-        :param azure_deployment_embed: Azure deployment name for embeddings.
-        :param azure_deployment_llm: Azure deployment name for language model operations.
-        """
-        client = cls(base_url)
+    def interactive_session(cls, aptus_token, folder_path):
+        client = cls(aptus_token)
         print("Enter your questions. Type 'quit' to exit.")
         while True:
             user_inquiry = input("Your question: ")
@@ -92,15 +63,25 @@ class RepoSearchClient:
                 break
 
             try:
-                result = client.search(folder_path, azure_deployment_embed, azure_deployment_llm, user_inquiry)
+                result = client.search(folder_path, user_inquiry)
                 print("Answer:", result)
             except Exception as e:
                 print(f"An error occurred: {e}")
+                
+if __name__ == "__main__":
+    # Initialize the SearchClient with the API token
+    aptus_token = "your_aptus_token_here"
+    text_file_path = "/path/to/your/text_file.txt"
+    
+    # Start an interactive session where the user can ask questions
+    # The answers will be based on the content of the specified text file
+    SearchClient.interactive_session(aptus_token, text_file_path)
 
-# # Example usage
-# if __name__ == "__main__":
-#     base_url = "http://localhost:5036
-#     folder_path = "/Users/mvenkatesh/Desktop/aptus/study_materials_dir"
-#     azure_deployment_embed = "aptus_embed_demo"
-#     azure_deployment_llm = "aptus35"
-#     RepoSearchClient.interactive_session(base_url, folder_path, azure_deployment_embed, azure_deployment_llm)
+if __name__ == "__main__":
+    # Initialize the RepoSearchClient with the API token
+    aptus_token = "your_aptus_token_here"
+    folder_path = "/path/to/your/folder_with_text_files"
+    
+    # Start an interactive session where the user can ask questions
+    # The answers will be based on the content of the text files within the specified folder
+    RepoSearchClient.interactive_session(aptus_token, folder_path)

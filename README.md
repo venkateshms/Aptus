@@ -1,4 +1,4 @@
-The Aptus SDK works with AptusAPI is a framework to build and deploy tools intended to assist research study workflows. 
+The Aptus SDK works with AptusAPI to build and deploy tools intended to assist research study workflows. 
 Contact madhavanv@aptus.bio to learn more about leveraging AptusAPI for clinical research support.
 
 Example Q/A automation with clincal knowledge base:
